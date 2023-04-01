@@ -3,13 +3,32 @@ import { Mesh } from 'three';
 import './style.css'
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 import gsap from 'gsap';
-
 const scene =new THREE.Scene();
 
-const geometry = new THREE.SphereGeometry( 3,64,64 );  //its just the shape
-const material = new THREE.MeshStandardMaterial( { color: "#00ff83",roughness:0.5 } ); //how it looks like 
-const sphere = new THREE.Mesh( geometry, material ); //it combines the geometry and the material to get a final mesh
-scene.add( sphere );
+// const Geometry = new THREE.TorusGeometry( 5, 2, 27, 100 );
+// const Material = new THREE.MeshBasicMaterial( { color: '00ff83',roughness:0.5 } );
+// const torus = new THREE.Mesh( Geometry, Material );
+// scene.add( torus );
+const verticesOfCube = [
+  -2,-2,-2,    2,-2,-2,    2, 2,-2,    -2, 2,-2,
+  -2,-2, 2,    2,-2, 2,    2, 2, 2,    -2, 2, 2,
+];
+
+const indicesOfFaces = [
+  2,1,0,    0,3,2,
+  0,4,7,    7,3,0,
+  0,1,5,    5,4,0,
+  1,2,6,    6,5,1,
+  2,3,7,    7,6,2,
+  4,5,6,    6,7,4
+];
+
+const geometry = new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, 6,3 );
+
+// const geometry = new THREE.SphereGeometry( 3,64,64 );  //its just the shape
+const material = new THREE.MeshStandardMaterial( { color: "#fff",roughness:0 ,wireframe: true } ); //how it looks like 
+const polyhedron = new THREE.Mesh( geometry, material ); //it combines the geometry and the material to get a final mesh
+scene.add( polyhedron );
 
 //sizes
 const sizes={
@@ -18,17 +37,20 @@ const sizes={
 }
 
 
+
 //light
 const light= new THREE.PointLight(0xffffff,1,100)
-light.position.set(0,10,10)
-light.intensity=1.25
+light.position.set(20,20,20)
+light.intensity=5
 scene.add(light)
-
-
+// const light2=new THREE.PointLight(0xffffff,1,100)
+// light2.position.set(-20,-20,-20)
+// light2.intensity=5
+// scene.add(light2)
 
 //Camera
 const camera = new THREE.PerspectiveCamera( 45 ,sizes.width/sizes.height,0.1,100 );  // parameters are field of view and aspect ratio --the width and height
-camera.position.z=20
+camera.position.z=30
 scene.add( camera );
 
 //renderer
@@ -91,6 +113,6 @@ window.addEventListener('mousemove',(e)=>{
       150,
     ]
     let newColor= new THREE.Color(`rgb(${rgb.join(",")})`)
-    gsap.to(sphere.material.color,{r:newColor.r, g:newColor.g,b:newColor.b})
+    gsap.to(polyhedron.material.color,{r:newColor.r, g:newColor.g,b:newColor.b})
   }
 })
